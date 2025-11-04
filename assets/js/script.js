@@ -18,6 +18,19 @@
     }
   };
 
+  document.addEventListener("DOMContentLoaded", () => {
+  const mobileBtn = document.querySelector(".mobile-menu-btn");
+  const nav = document.querySelector(".nav");
+
+  if (mobileBtn && nav) {
+    mobileBtn.addEventListener("click", () => {
+      nav.classList.toggle("mobile-open");
+      mobileBtn.classList.toggle("active");
+    });
+  }
+});
+
+
   // Smooth scroll for anchor links
   document.addEventListener('click', function(e){
     var a = e.target.closest('a');
