@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IoT MQTT Panel for PC — Visualize, Control & Monitor Your Devices</title>
+  <meta name="description" content="IoT MQTT Panel for PC — powerful MQTT dashboard and control panel for smart home and industrial IoT. Learn features, installation on Windows/Mac, guides and download links." />
+  <meta name="keywords" content="IoT MQTT Panel for Android, IoT MQTT Panel for PC, MQTT dashboard, MQTT GUI, IoT dashboard, smart home MQTT" />
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="assets/img/favicon.ico" />
+</head>
+<body>
+  <!-- Header / Nav -->
+  <header class="header" id="top">
+    <div class="container">
+      <div class="logo"><a href="index.html"><img src="assets/img/logo.png" alt="IoT MQTT Panel logo" class="logo-img"><span class="logo-text">IoT MQTT Panel</span></a></div>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="iot-mqtt-panel-for-windows.html">Windows</a>
+        <a href="iot-mqtt-panel-for-ios.html">iOS</a>
+        <a href="#features">Features</a>
+        <a href="#download">Download</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn btn-outline" href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank" rel="noopener">Google Play</a>
+        <a class="btn btn-primary" href="iot-mqtt-panel-for-windows.html">Download for PC</a>
+      </div>
+
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <h1 class="hero-title">IoT MQTT Panel for PC — <span class="gradient-text">Visualize, Control & Monitor</span></h1>
+          <p class="hero-description">IoT MQTT Panel is a flexible, lightweight and highly configurable dashboard for MQTT-based Internet of Things applications. Originally designed for mobile platforms, this page provides complete guidance to run the app on desktop systems and scale your projects to larger screens. Build persistent dashboards, connect securely to your broker, parse JSON payloads and control devices with one interface.</p>
+
+          <div class="hero-buttons">
+            <a class="btn btn-primary" href="iot-mqtt-panel-for-windows.html">Download for Windows</a>
+            <a class="btn btn-outline" href="#features">Explore Features</a>
+          </div>
+
+          <p class="small-muted">Official sources: Google Play and App Store listing for IoT MQTT Panel (SNR Lab). Links provided in Download section.</p>
+        </div>
+
+        <div class="hero-visual card">
+          <img src="assets/img/hero.png" alt="IoT MQTT Panel on desktop" class="hero-img">
+          <div class="vpn-card" style="margin-top:18px">
+            <h3>Quick Overview</h3>
+            <p>Widgets, sliders, switches, charts, and indicators — all configurable and exportable. Use local or cloud brokers (MQTT / WSS) with TLS support.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Comprehensive Feature Set for Modern IoT</h2>
+          <p>Below we break down the most important features and how they apply to desktop workflows and real-world deployments.</p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card card">
+            <h3>Multi-panel Dashboards</h3>
+            <p>Create and switch between multiple dashboards to monitor different rooms, systems or projects. Each panel contains multiple widgets — from simple switches to time-series charts — enabling both control and analytics at-a-glance.</p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Robust MQTT Connectivity</h3>
+            <p>Supports MQTT over TCP, MQTT over TLS, and MQTT over WebSocket (ws/wss). Compatible with Mosquitto, EMQX, HiveMQ, AWS IoT Core and other brokers. Configure client ID, QoS, retain flags and will messages for production-ready deployments.</p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Secure Communication</h3>
+            <p>Use server-side certificates, CA chains and optional client certificates to secure every connection. Best practice for remote dashboards is TLS (wss/mqtts) combined with strict access control at the broker.</p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>JSON Parsing & Transformation</h3>
+            <p>Receive structured JSON payloads and map nested fields to widget values. Perform lightweight transformations to prepare telemetry for charts and indicators without changing device firmware.</p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Import/Export & Templates</h3>
+            <p>Export panel JSON to share with collaborators or import templates to get started quickly. This is ideal for teams and classroom settings where repeatable configuration matters.</p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Persistent & Background Modes</h3>
+            <p>Keep dashboards running in the background on desktop systems or configure wrappers to start panels automatically after boot. This approach is excellent for operations centers and permanent installations.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to run on PC -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>How to Run IoT MQTT Panel on PC</h2>
+          <p>The app is native to mobile platforms but runs well on desktop via trusted methods. We provide step-by-step instructions for popular approaches below.</p>
+        </div>
+
+        <div class="card">
+          <h3>Method A — Android Emulator (BlueStacks / LDPlayer)</h3>
+          <p>Step-by-step: install an emulator, sideload or open the Play Store inside the emulator, install IoT MQTT Panel and configure. Emulators provide stable performance, large-screen view and easy access to mobile-specific features.</p>
+
+          <ol>
+            <li>Download BlueStacks or LDPlayer and install.</li>
+            <li>Open the emulator and either sign in to Google Play or sideload the APK.</li>
+            <li>Install IoT MQTT Panel and test connectivity to your broker.</li>
+            <li>Import exports or configure panels; adjust emulator settings for performance and background behavior.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>Method B — Desktop Wrappers & Tools</h3>
+          <p>Some third-party tools wrap Android apps into standalone desktop executables. These wrappers can improve integration (native windows, tray icons). Use reputable tools and validate security/sandboxing before deploying in production.</p>
+        </div>
+
+        <div class="card">
+          <h3>Method C — Progressive Web or Native Alternatives</h3>
+          <p>When available, browser-based dashboards or native desktop builds may offer equal functionality without emulation. Check the developer site for official releases or updates.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Download -->
+    <section id="download" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Downloads & Official Links</h2>
+          <p>Official links are provided below — use the platform-specific installers or the APK for emulation.</p>
+        </div>
+
+        <div class="download-grid">
+          <div class="card download-card">
+            <strong>Android (Google Play)</strong>
+            <p>Official app page on Google Play. Install on your Android devices and export panel configurations for desktop use.</p>
+            <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank" rel="noopener">Open on Google Play</a>
+          </div>
+
+          <div class="card download-card">
+            <strong>Windows (APK for emulator)</strong>
+            <p>Download the APK to run in an emulator or wrapper. This package is hosted for convenience at NapkForPC.</p>
+            <a class="btn btn-primary" href="https://napkforpc.com/apk/snr.lab.iotmqttpanel.prod/" target="_blank" rel="noopener">Download APK (NapkForPC)</a>
+          </div>
+
+          <div class="card download-card">
+            <strong>iOS (App Store)</strong>
+            <p>Visit the App Store page for iOS installs and App Store notes: compatibility, release notes and screenshots.</p>
+            <a class="btn btn-outline" href="iot-mqtt-panel-for-ios.html">iOS App Info</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Frequently Asked Questions</h2>
+        </div>
+
+        <div class="card">
+          <h3>Is IoT MQTT Panel secure for remote access?</h3>
+          <p>Yes — use TLS (wss/mqtts) and broker-side authentication. Avoid exposing non-TLS MQTT to the internet. Use VPNs or SSH tunnels for additional protection.</p>
+        </div>
+
+        <div class="card">
+          <h3>Can I share dashboards with colleagues?</h3>
+          <p>Export panel JSON files for sharing and import on other devices. Maintain version control for production deployments.</p>
+        </div>
+
+        <div class="card">
+          <h3>Does it support retained messages and QoS?</h3>
+          <p>Yes. Configure QoS and retained messages to control reliability and initial state after reconnects.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>IoT MQTT Panel</h3>
+        <p>Powerful MQTT dashboards for hobbyists, makers and professionals. Official resources: Google Play, App Store and SNR Lab.</p>
+      </div>
+
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="iot-mqtt-panel-for-windows.html">Windows</a></li>
+          <li><a href="iot-mqtt-panel-for-ios.html">iOS</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank">Google Play</a></li>
+          <li><a href="https://apps.apple.com/us/app/iot-mqtt-panel/id6466780124" target="_blank">App Store</a></li>
+          <li><a href="https://snrlab.in/" target="_blank">SNR Lab</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container" style="text-align:center;border-top:1px solid rgba(255,255,255,0.04);padding-top:18px;margin-top:18px;color:rgba(255,255,255,0.6)">
+      © 2025 IoT MQTT Panel — All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button id="backToTop" class="hidden" aria-label="Back to top" onclick="scrollToTop()">↑</button>
+
+  <script src="assets/js/script.min.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-28QZYNLNDH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-28QZYNLNDH');
+  </script>
+</body>
+</html>

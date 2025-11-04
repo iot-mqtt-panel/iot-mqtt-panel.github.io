@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IoT MQTT Panel for iOS — Installation, Security, TestFlight & Production Guide</title>
+  <meta name="description" content="IoT MQTT Panel for iOS — in-depth technical guide for iPhone and iPad deployments. Learn App Store & TestFlight workflows, secure MQTT configuration (TLS & Keychain), background execution limits, MDM deployment, JSON payload patterns and troubleshooting." />
+  <meta name="keywords" content="IoT MQTT Panel for iOS, MQTT dashboard iPhone, IoT MQTT Panel iPad, TestFlight IoT MQTT Panel, secure MQTT iOS, iOS background MQTT, MDM IoT app deployment" />
+  <link rel="stylesheet" href="assets/css/style.css">
+  <meta name="robots" content="index,follow">
+  <meta name="author" content="IoT MQTT Panel — Technical Documentation">
+  <!-- Open Graph -->
+  <meta property="og:title" content="IoT MQTT Panel for iOS — Technical Guide & Deploy" />
+  <meta property="og:description" content="Comprehensive iOS developer guide for IoT MQTT Panel: TestFlight, App Store, TLS, Keychain, background execution, and enterprise deployment." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="" />
+  <meta property="og:image" content="assets/img/hero.png" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="logo"><a href="index.html"><img src="assets/img/logo.png" alt="IoT MQTT Panel logo" class="logo-img"><span class="logo-text">IoT MQTT Panel</span></a></div>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="iot-mqtt-panel-for-windows.html">Windows</a>
+        <a href="iot-mqtt-panel-for-ios.html" aria-current="page">iOS</a>
+        <a href="#features">Features</a>
+        <a href="#download">Download</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn btn-outline" href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank" rel="noopener">Google Play</a>
+        <a class="btn btn-primary" href="https://apps.apple.com/us/app/iot-mqtt-panel/id6466780124" target="_blank" rel="noopener">Open on App Store</a>
+      </div>
+
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main>
+    <section class="section hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <h1 class="hero-title">IoT MQTT Panel for iOS — <span class="gradient-text">Technical Guide & Enterprise Deployment</span></h1>
+          <p class="hero-description">
+            This comprehensive technical guide addresses advanced topics for running, securing and deploying <strong>IoT MQTT Panel</strong> on iOS devices (iPhone and iPad). Topics include TestFlight and App Store distribution, iOS networking and background execution limitations, TLS configuration with Keychain, device management (MDM), performance tuning, JSON payload best practices, and troubleshooting strategies for production-grade IoT dashboards.
+          </p>
+
+          <div class="hero-buttons">
+            <a class="btn btn-primary" href="https://apps.apple.com/us/app/iot-mqtt-panel/id6466780124" target="_blank" rel="noopener">Open on App Store</a>
+            <a class="btn btn-outline" href="#ios-background">iOS Background</a>
+          </div>
+
+          <p class="small-muted">Audience: iOS engineers, mobile DevOps, IT teams deploying dashboards in corporate or industrial environments.</p>
+        </div>
+
+        <div class="hero-visual card">
+          <img src="assets/img/hero-ios.png" alt="IoT MQTT Panel on iPhone and iPad" class="hero-img">
+          <div style="margin-top:12px;">
+            <strong>Quick navigation:</strong>
+            <ul style="margin-top:8px">
+              <li><a href="#testflight">TestFlight & QA</a></li>
+              <li><a href="#security">TLS & Keychain</a></li>
+              <li><a href="#mdm">MDM & Enterprise</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Executive summary -->
+    <section class="section" id="summary">
+      <div class="container">
+        <div class="card">
+          <h2>Executive Summary</h2>
+          <p>
+            IoT MQTT Panel on iOS provides a robust and portable MQTT dashboard for monitoring and controlling devices. While mobile platforms differ from desktop in lifecycle and background capabilities, iOS offers reliable networking, secure key storage (Keychain), and modern TLS stacks. This guide helps teams make informed decisions about security, distribution, automation, and scalable deployment of IoT dashboards on Apple devices.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features & iOS-specific architecture -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Feature Overview & iOS Architecture</h2>
+          <p>
+            The iOS application mirrors the mobile-first design of IoT MQTT Panel: a configurable panel of widgets bound to MQTT topics. On iOS, app behavior and capabilities are shaped by the OS lifecycle, background execution rules, network frameworks and sandboxing.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card card">
+            <h3>Widget Model on iOS</h3>
+            <p>
+              Widgets include toggles, sliders, numeric readouts, text fields, and charts. Each widget subscribes to topics and can publish commands. On iOS, widget state is persisted to app storage (sandboxed files) and optionally backed up or exported via share sheets or cloud storage if enabled by the user.
+            </p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Networking Stack & Transport</h3>
+            <p>
+              IoT MQTT Panel for iOS uses a standard MQTT client library compatible with iOS networking frameworks. The client supports MQTT over TCP/TLS and MQTT over WebSocket (ws/wss) when brokers expose a WebSocket endpoint. TLS leverages the iOS Secure Transport / Network framework with system-trusted CAs and optional client certificates managed via Keychain.
+            </p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Persistence & Backup</h3>
+            <p>
+              Panel configurations export/import as JSON. On iOS, users should back up important configurations via iCloud Drive, Files app, enterprise file repositories, or by exporting JSON to an external system. For enterprise deployments, use MDM-managed configuration distribution.
+            </p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Security Model</h3>
+            <p>
+              iOS security features such as Keychain, ATS (App Transport Security) restrictions, and the secure networking stack provide strong primitives for secure MQTT connections. Use ATS-compliant endpoints (TLS 1.2+) and store credentials or short-lived tokens in Keychain.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- TestFlight & App Store workflows -->
+    <section class="section" id="testflight">
+      <div class="container">
+        <div class="section-header">
+          <h2>TestFlight & App Store Distribution</h2>
+          <p>
+            For commercial and internal testing, use TestFlight for pre-release distribution and App Store for public releases. The iOS ecosystem enforces strict privacy and security guidelines — follow them during packaging.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Preparing for TestFlight</h3>
+          <p>
+            TestFlight allows up to 10,000 testers per app using public or invite-only builds. It is ideal for QA, internal validation, and early adopter cohorts. Key steps:
+          </p>
+          <ol>
+            <li>Register an Apple Developer account and enroll in the Apple Developer Program.</li>
+            <li>Ensure the app's bundle identifier matches the one in your App Store Connect record.</li>
+            <li>Use Xcode to archive an IPA and upload it to App Store Connect (via Xcode Organizer or Transporter).</li>
+            <li>Provide release notes and enable Test Information (what to test, special credentials if needed).</li>
+            <li>Invite external testers or generate a public TestFlight link.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>App Store Submission — Checklist</h3>
+          <p>
+            The App Store review requires attention to privacy, security, user data, and clear documentation of background network usage (if any). Checklist:
+          </p>
+          <ul>
+            <li>Privacy Policy URL and App Store privacy details.</li>
+            <li>Accurate app description and screenshots for iPhone and iPad.</li>
+            <li>If your app uses background processing (e.g., background fetch, VoIP), declare the appropriate background modes and use them per sandbox policy.</li>
+            <li>Use ATS-compliant endpoints; declare exceptions in Info.plist only if necessary and justify them in review notes.</li>
+            <li>Ensure appropriate handling of user credentials, encryption, and data export (provide a support email and contact information). </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Automating Builds & Releases</h3>
+          <p>
+            Use CI tools (GitHub Actions, Bitrise, Azure DevOps, or Jenkins) to automate archiving and uploading to App Store Connect. Best practices:
+          </p>
+          <ul>
+            <li>Sign builds with an App Store Distribution certificate stored in a secure vault or ephemeral signing (Apple’s App Store Connect API and App Store notarization).</li>
+            <li>Tag releases in source control and generate release notes automatically.</li>
+            <li>Run unit tests and smoke tests on simulator and device farm before sending to TestFlight.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- iOS background & lifecycle -->
+    <section class="section" id="ios-background">
+      <div class="container">
+        <div class="section-header">
+          <h2>iOS App Lifecycle & Background Networking Limitations</h2>
+          <p>
+            iOS imposes strict lifecycle constraints that affect continuous MQTT connections. Understanding these limitations informs architecture decisions for dashboards that require near-real-time updates.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Foreground vs Background Behavior</h3>
+          <p>
+            When the app is in the foreground it can maintain persistent MQTT connections and high-frequency telemetry. When backgrounded, the OS may suspend the app to preserve battery, and persistent socket connections can be closed. The only reliable background modes permitting network activity are:
+          </p>
+          <ul>
+            <li><strong>Background fetch</strong> — periodic wakeups with limited runtime for small network updates.</li>
+            <li><strong>VoIP/PushKit</strong> — reserved for VoIP apps (not appropriate for dashboards).</li>
+            <li><strong>Background processing</strong> — limited scheduled tasks available for short work.</li>
+            <li><strong>Silent push notifications</strong> — cloud can send silent pushes (content-available) to wake the app for short processing windows.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Recommended Pattern for Near-Real-Time</h3>
+          <p>
+            Combine local persistent MQTT connections while the app is foregrounded with a server-side component that issues <em>silent push notifications</em> for important events. Server architecture:
+          </p>
+          <ol>
+            <li>Devices publish telemetry to broker.</li>
+            <li>Broker or middleware pushes important events to a cloud service (e.g., AWS Lambda, GCP Cloud Function).</li>
+            <li>Cloud service sends APNs silent pushes to designated device tokens to wake the app for processing, or triggers notifications visible to the user when necessary.</li>
+          </ol>
+          <p>
+            Note: Silent pushes are not guaranteed (the OS may throttle) and should be treated as best-effort. For guaranteed delivery, implement server-side notifications and escalate via visible push notifications or SMS in critical workflows.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>APNs Integration</h3>
+          <p>
+            For push notifications, register your app with APNs. For large-scale deployments use topics and tokens correctly and maintain a push provider server to send silent pushes when device-specific events occur. Use the new HTTP/2 APNs API with JWT authentication in production.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security: Keychain, ATS, secure storage -->
+    <section class="section" id="security">
+      <div class="container">
+        <div class="section-header">
+          <h2>Security: TLS, ATS, Keychain & Best Practices</h2>
+          <p>
+            Security should be built into every part of the solution: broker configuration, client authentication, certificate handling and data storage. iOS provides strong primitives which — when used correctly — minimize risk.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>App Transport Security (ATS)</h3>
+          <p>
+            ATS enforces TLS requirements for iOS apps. Use TLS 1.2+ and strong ciphers. Avoid ATS exceptions unless you have a valid operational reason and include justifications in your App Store submission.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Keychain — Secure Storage for Credentials</h3>
+          <p>
+            Store passwords, tokens and client certificates in iOS Keychain. Keychain ensures credentials are encrypted and backed by device security policies (e.g., biometrics when configured). Example usage (Swift):
+          </p>
+          <pre><code>// Example: store token in Keychain (pseudo-code)
+let key = "mqttAuthToken"
+let tokenData = authToken.data(using: .utf8)!
+let query: [String: Any] = [
+  kSecClass as String: kSecClassGenericPassword,
+  kSecAttrAccount as String: key,
+  kSecValueData as String: tokenData,
+  kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
+]
+SecItemAdd(query as CFDictionary, nil)
+</code></pre>
+          <p>
+            Use mature Keychain helper libraries (e.g., KeychainAccess, Valet) to reduce implementation errors.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Client Certificates & mTLS</h3>
+          <p>
+            For highest confidence, use mutual TLS. Provision client certificates into Keychain and configure the MQTT client to present the certificate during TLS handshake. Manage certificate lifecycle: issuance, revocation, rotation.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>OAuth & Short-lived Tokens</h3>
+          <p>
+            When possible, prefer OAuth or short-lived tokens issued by an authentication gateway. This reduces long-term credential exposure and simplifies revocation. Use refresh tokens stored securely in Keychain and implement token rotation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Provisioning, MDM, enterprise distribution -->
+    <section class="section" id="mdm">
+      <div class="container">
+        <div class="section-header">
+          <h2>Provisioning, MDM & Enterprise Deployment</h2>
+          <p>
+            Enterprise environments often require centralized configuration, app distribution and lifecycle management. Apple provides multiple distribution channels: App Store, Custom Apps via Apple Business Manager, and enterprise in-house distribution through MDM.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Custom Apps & Apple Business Manager</h3>
+          <p>
+            Distribute private apps to partners or employees via Apple Business Manager (ABM) and Mobile Device Management (MDM) solutions (Jamf, Microsoft Intune, VMware Workspace ONE). ABM allows you to publish custom apps visible only to your organization.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>MDM Configuration & Managed App Config</h3>
+          <p>
+            MDM systems can push managed app configuration (a JSON dictionary) into the app to preconfigure broker endpoints, credentials (with secure handling), or toggle features. Implement the managed app configuration key parsing to accept pre-provisioned JSON and fall back gracefully to user input.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>In-House Distribution & Security</h3>
+          <p>
+            For fully private in-house apps, use Apple Enterprise Program (requires eligibility) and sign and distribute the IPA to managed devices. Test thoroughly: enterprise distribution bypasses App Store review but carries higher operational responsibility (certificate management, revocation).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- JSON payload patterns for iOS dashboards -->
+    <section class="section" id="json-patterns">
+      <div class="container">
+        <div class="section-header">
+          <h2>Message Patterns & JSON Examples for iOS Dashboards</h2>
+          <p>
+            Well-structured topics and payloads improve reliability of parsing on mobile clients. Use consistent keys and include metadata for timestamps and units.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Telemetry Example</h3>
+          <pre><code>{
+  "deviceId":"weather-station-01",
+  "ts": 1698000000,
+  "measurements": {
+    "temperature": { "value": 22.4, "unit":"C" },
+    "humidity": { "value": 58.3, "unit":"%" }
+  },
+  "status":"online"
+}
+</code></pre>
+          <p>
+            Bind a widget to JSON path <code>$.measurements.temperature.value</code> to show the numeric temperature value reliably.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Command & Acknowledgement Example</h3>
+          <pre><code>{
+  "commandId":"cmd-001",
+  "action":"setFan",
+  "params":{ "speed":3 },
+  "issuedBy":"dashboard-user-01"
+}
+</code></pre>
+          <p>
+            Device acknowledges on <code>devices/{deviceId}/ack</code> with result payload:
+          </p>
+          <pre><code>{
+  "commandId":"cmd-001",
+  "status":"success",
+  "ts":1698000123
+}
+</code></pre>
+        </div>
+
+        <div class="card">
+          <h3>Retained State Example</h3>
+          <p>
+            Publish retained state for snapshot recovery:
+          </p>
+          <pre><code>{
+  "deviceId":"weather-station-01",
+  "state": {
+    "online":true,
+    "lastSeen":1698000123
+  }
+}
+</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Performance & battery considerations -->
+    <section class="section" id="performance">
+      <div class="container">
+        <div class="section-header">
+          <h2>Performance, Battery & UX Considerations</h2>
+          <p>
+            Mobile environments require careful balancing between responsiveness and battery life. Optimize polling, reduce UI refresh rates, and design charts to use incremental updates.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Network Frequency & Throttling</h3>
+          <p>
+            Avoid pushing UI updates for every incoming message if message frequency is high. Implement client-side throttling (e.g., update UI at most once per second per widget) and aggregate updates where relevant.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Charting & Memory</h3>
+          <p>
+            Use fixed-size circular buffers for time-series data and limit local retention to a sliding window (e.g., last 5 minutes or last 1000 points). Persist longer-term history to a backend if needed.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Battery-Aware Features</h3>
+          <ul>
+            <li>Allow users to select a “low-power” mode.</li>
+            <li>Use background fetch sparingly and rely on server-side pushes for critical events.</li>
+            <li>Respect mobile data settings — provide an option to restrict high-frequency updates on cellular networks.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="section" id="troubleshooting">
+      <div class="container">
+        <div class="section-header">
+          <h2>Troubleshooting Guide</h2>
+          <p>
+            Practical checks and diagnostic steps for common issues encountered when running IoT MQTT Panel on iOS.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>1) Connection Issues</h3>
+          <ol>
+            <li>Validate broker endpoint and port using an independent client (MQTT Explorer on a desktop or mosquitto clients).</li>
+            <li>Confirm TLS chain is valid — check root CA and intermediate certificates. Use <code>openssl s_client</code> to inspect the server certificate.</li>
+            <li>Check app logs (if available) for TLS handshake failure reasons (certificate name mismatch, unsupported protocol, etc.).</li>
+            <li>Check network restrictions: corporate networks may block non-standard ports or require proxies.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>2) Background Delivery Not Working</h3>
+          <ul>
+            <li>Verify APNs token registration on the device and server side.</li>
+            <li>Ensure the push payload sets <code>content-available:1</code> for silent pushes.</li>
+            <li>Check that the app is allowed background refresh and that the system is not aggressively throttling background tasks.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>3) Credentials & Keychain Access</h3>
+          <ol>
+            <li>Confirm credentials are written and read from Keychain by the correct App Group (if using app groups).</li>
+            <li>For managed deployments verify that MDM policies do not restrict Keychain access or shared credential APIs.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>4) Unexpected App Termination</h3>
+          <p>
+            Inspect crash reports via Xcode Organizer or Apple Crash Reports in App Store Connect. Use symbolicated crash traces to identify memory issues or unhandled exceptions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advanced integrations -->
+    <section class="section" id="integrations">
+      <div class="container">
+        <div class="section-header">
+          <h2>Advanced Integrations</h2>
+          <p>
+            The iOS dashboard can be part of a broader ecosystem: device lifecycle management, analytics pipelines, and automation controllers.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Home Automation Bridges</h3>
+          <p>
+            Use Home Assistant or Node-RED as an integration layer. IoT MQTT Panel remains a visualization and control surface while automation and persistence are handled by the backend.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Analytics Pipeline</h3>
+          <ol>
+            <li>Broker → MQTT-to-Analytics (Telegraf / custom consumer) → InfluxDB / BigQuery → BI tools / Grafana.</li>
+            <li>Use the iOS dashboard for real-time operations and the analytics stack for historical insights.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>Webhook & External Actions</h3>
+          <p>
+            For actions initiated in the dashboard that should trigger workflows (webhook calls, APIs), architect a secure gateway to validate requests and authorize actions on devices.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Downloads & resources -->
+    <section class="section" id="download">
+      <div class="container">
+        <div class="section-header">
+          <h2>Downloads & Resources</h2>
+          <p>Official links and resources for the iOS application and broker technologies.</p>
+        </div>
+
+        <div class="download-grid">
+          <div class="card download-card">
+            <strong>App Store (iOS)</strong>
+            <p>Official iOS listing: <a class="btn btn-primary" href="https://apps.apple.com/us/app/iot-mqtt-panel/id6466780124" target="_blank" rel="noopener">Open on App Store</a></p>
+          </div>
+
+          <div class="card download-card">
+            <strong>Google Play (Android)</strong>
+            <p>Android listing for parity and integration testing: <a href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank" rel="noopener">Open on Google Play</a></p>
+          </div>
+
+          <div class="card download-card">
+            <strong>APK for testing (Windows)</strong>
+            <p>Download APK (Windows emulator use): <a class="btn btn-primary" href="https://napkforpc.com/apk/snr.lab.iotmqttpanel.prod/" target="_blank" rel="noopener">Download APK (NapkForPC)</a></p>
+          </div>
+        </div>
+
+        <div style="margin-top:16px" class="card">
+          <h3>Recommended Broker Documentation</h3>
+          <ul>
+            <li>Mosquitto — Lightweight open-source broker and quickstart guides.</li>
+            <li>EMQX — High-throughput broker, clustering and plugins.</li>
+            <li>HiveMQ — Commercial-grade broker with enterprise features.</li>
+            <li>Apple Developer Documentation — APNs, Background Execution, and Keychain guides.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <h2>Frequently Asked Questions (iOS)</h2>
+        </div>
+
+        <div class="card">
+          <h3>Q: Will IoT MQTT Panel keep a persistent connection in the background?</h3>
+          <p>
+            A: Not reliably. iOS suspends apps in background to save battery. Use foreground operation for continuous connections and consider server-side silent push notifications to wake the app for important events.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Q: Is mutual TLS (mTLS) supported on iOS?</h3>
+          <p>
+            A: Yes — when configured with client certificates stored in Keychain. The app must be able to access the private key from Keychain to present it during the TLS handshake.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Q: Can I preconfigure brokers and credentials via MDM?</h3>
+          <p>
+            A: Yes. Use managed app configuration and MDM to push broker endpoints and optionally handle credential distribution securely. Avoid pushing raw passwords; prefer token-based access where possible.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Q: What is the recommended approach for enterprise scale?</h3>
+          <p>
+            A: Use ABM + MDM to distribute custom apps, centralize credentials via a secure vault, rely on mutual TLS or OAuth-based tokens, and maintain monitoring and logging for all deployed devices.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Appendix and useful commands -->
+    <section class="section" id="appendix">
+      <div class="container">
+        <div class="card">
+          <h2>Appendix — Useful Commands, Debugging & Checklist</h2>
+
+          <h3>Inspect TLS from macOS / Linux</h3>
+          <pre><code># Check TLS chain and handshake
+openssl s_client -connect broker.example.com:8883 -showcerts
+</code></pre>
+
+          <h3>APNs Testing</h3>
+          <p>
+            For send/receive APNs you can use server-side scripts (Node, Python) to call APNs HTTP/2 API using JWT authentication. Validate device tokens and certificate keys before sending silent pushes.
+          </p>
+
+          <h3>Checklist Before Production Rollout</h3>
+          <ul>
+            <li>Provision App ID and distribution certificates</li>
+            <li>Test TLS handshake and certificate validation on real devices</li>
+            <li>Validate push notifications and background fetch behavior</li>
+            <li>Back up and version control panel JSON exports</li>
+            <li>Set up MDM policies and managed app config for enterprise deployments</li>
+            <li>Monitor crash logs and implement remote logging for critical errors</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>IoT MQTT Panel</h3>
+        <p>Reliable MQTT dashboards for mobile and desktop. Use this guide for secure and scalable iOS deployments of IoT MQTT Panel across fleets of devices.</p>
+      </div>
+
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="iot-mqtt-panel-for-windows.html">Windows</a></li>
+          <li><a href="#testflight">TestFlight</a></li>
+          <li><a href="#security">Security</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="https://apps.apple.com/us/app/iot-mqtt-panel/id6466780124" target="_blank" rel="noopener">App Store</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank" rel="noopener">Google Play</a></li>
+          <li><a href="https://napkforpc.com/apk/snr.lab.iotmqttpanel.prod/" target="_blank" rel="noopener">NapkForPC APK</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container" style="text-align:center;border-top:1px solid rgba(255,255,255,0.04);padding-top:18px;margin-top:18px;color:rgba(255,255,255,0.6)">
+      © 2025 IoT MQTT Panel — All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button id="backToTop" class="hidden" aria-label="Back to top" onclick="scrollToTop()">↑</button>
+
+  <script src="assets/js/script.min.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-28QZYNLNDH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-28QZYNLNDH');
+  </script>
+</body>
+</html>

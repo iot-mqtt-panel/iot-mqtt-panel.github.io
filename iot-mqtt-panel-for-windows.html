@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IoT MQTT Panel for Windows — Technical Guide, Install & Production Best Practices</title>
+  <meta name="description" content="IoT MQTT Panel for Windows — technical installation guide, emulator-based deployment, secure MQTT configuration, performance tuning and production best practices. Step-by-step BlueStacks & LDPlayer instructions, TLS setup, JSON payload examples and troubleshooting." />
+  <meta name="keywords" content="IoT MQTT Panel for Windows, MQTT dashboard Windows, run MQTT app on PC, BlueStacks IoT MQTT Panel, LDPlayer IoT MQTT Panel, secure MQTT on Windows, MQTT TLS setup, MQTT JSON examples" />
+  <link rel="stylesheet" href="assets/css/style.css">
+  <meta name="robots" content="index,follow">
+  <meta name="author" content="IoT MQTT Panel — Technical Documentation">
+  <!-- Open Graph -->
+  <meta property="og:title" content="IoT MQTT Panel for Windows — Technical Guide & Install" />
+  <meta property="og:description" content="In-depth developer guide to run IoT MQTT Panel on Windows, secure your MQTT connections, configure dashboards, and deploy to production." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="" />
+  <meta property="og:image" content="assets/img/hero.png" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="logo"><a href="index.html"><img src="assets/img/logo.png" alt="IoT MQTT Panel logo" class="logo-img"><span class="logo-text">IoT MQTT Panel</span></a></div>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="iot-mqtt-panel-for-windows.html" aria-current="page">Windows</a>
+        <a href="iot-mqtt-panel-for-ios.html">iOS</a>
+        <a href="#features">Features</a>
+        <a href="#download">Download</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn btn-outline" href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank" rel="noopener">Google Play</a>
+        <a class="btn btn-primary" href="#download">Download APK</a>
+      </div>
+
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main>
+    <section class="section hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <h1 class="hero-title">IoT MQTT Panel for Windows — <span class="gradient-text">Technical Installation & Production Guide</span></h1>
+          <p class="hero-description">
+            This document is a developer-focused, step-by-step guide to running <strong>IoT MQTT Panel</strong> on Windows. It covers emulator-based installation (BlueStacks, LDPlayer), desktop wrapper strategies, secure MQTT configuration (TLS, authentication), broker tuning, JSON payload examples, integration patterns, performance and monitoring strategies, and thorough troubleshooting.
+          </p>
+
+          <div class="hero-buttons">
+            <a class="btn btn-primary" href="https://napkforpc.com/apk/snr.lab.iotmqttpanel.prod/" target="_blank" rel="noopener">Download APK (NapkForPC)</a>
+            <a class="btn btn-outline" href="#how-to-run">How to Run</a>
+          </div>
+
+          <p class="small-muted">Intended audience: IoT engineers, system integrators, DevOps specialists, and advanced hobbyists who need a reliable desktop deployment path for IoT MQTT Panel.</p>
+        </div>
+
+        <div class="hero-visual card">
+          <img src="assets/img/hero-windows.png" alt="IoT MQTT Panel on desktop" class="hero-img">
+          <div style="margin-top:14px">
+            <strong>Quick links:</strong>
+            <ul style="margin-top:8px;">
+              <li><a href="#how-to-run">Install & Run</a></li>
+              <li><a href="#mqtt-config">Secure MQTT Configuration</a></li>
+              <li><a href="#examples">JSON & Topic Examples</a></li>
+              <li><a href="#troubleshooting">Troubleshooting</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Executive summary -->
+    <section class="section" id="summary">
+      <div class="container">
+        <div class="card">
+          <h2>Executive Summary (What you will achieve)</h2>
+          <p>
+            By following this guide you will be able to:
+          </p>
+          <ul>
+            <li>Install and run IoT MQTT Panel on Windows using emulators or wrappers.</li>
+            <li>Configure secure MQTT connections with TLS, username/password, and optional client certificates.</li>
+            <li>Design efficient dashboard panels that parse JSON telemetry and visualize time-series data.</li>
+            <li>Deploy desktop dashboards in production with monitoring, persistence and backups.</li>
+            <li>Troubleshoot connectivity, performance, and configuration issues using a proven checklist.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features & Architecture -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Architecture & Feature Overview</h2>
+          <p>
+            IoT MQTT Panel is a client-facing dashboard that subscribes and publishes to an MQTT broker. The app's architecture is intentionally client-side: dashboards and widget definitions are JSON artifacts stored locally or exported for sharing. When running on Windows you will treat the app as a client that connects to your broker (local or cloud).
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card card">
+            <h3>Client-Server Model</h3>
+            <p>
+              The app acts as an MQTT client. It does not host an MQTT broker. For production deployments pair the app with a robust broker such as <strong>Mosquitto</strong>, <strong>EMQX</strong>, or managed brokers like <strong>AWS IoT Core</strong>, <strong>HiveMQ Cloud</strong>, or similar.
+            </p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Widget Types & Data Flow</h3>
+            <p>
+              Widgets are the building blocks of the panel: switches, sliders, text indicators, numeric gauges, and charts. Each widget binds to MQTT topic(s) and optionally maps JSON paths to display values. Data flow is unidirectional (broker → client) for telemetry and bidirectional (client ↔ broker) for control commands.
+            </p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Security & Authentication</h3>
+            <p>
+              The app supports username/password authentication. For production it is strongly recommended to use TLS (mqtts/wss) and to protect credentials. Optionally enforce client certificate authentication at the broker for highest security.
+            </p>
+          </article>
+
+          <article class="feature-card card">
+            <h3>Persistence & Export</h3>
+            <p>
+              Panel definitions and widget states can be exported as JSON. In Windows deployments create a backup schedule for these JSON files and store them in an accessible archive or version control system (e.g., Git for changes).
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to run on PC -->
+    <section class="section" id="how-to-run">
+      <div class="container">
+        <div class="section-header">
+          <h2>How to Run IoT MQTT Panel on Windows (Step-by-Step)</h2>
+          <p>
+            This section covers trusted approaches to run the mobile app on Windows: Android emulators and desktop wrappers. Emulators are the simplest and most compatible option. Wrappers can provide a more native feel, but they require additional validation.
+          </p>
+        </div>
+
+        <!-- Emulator: BlueStacks -->
+        <div class="card" style="margin-bottom:18px">
+          <h3>Method 1 — BlueStacks (recommended for stability)</h3>
+          <p>
+            BlueStacks is a mature Android emulator optimized for compatibility. Follow these steps to get IoT MQTT Panel up and running quickly.
+          </p>
+
+          <h4>Prerequisites</h4>
+          <ul>
+            <li>Windows 10/11 (64-bit recommended)</li>
+            <li>At least 8 GB RAM (16 GB preferred for smoother behavior)</li>
+            <li>20+ GB free disk space</li>
+            <li>Network access to your MQTT broker (local network or internet)</li>
+          </ul>
+
+          <h4>Installation Steps (BlueStacks)</h4>
+          <ol>
+            <li>Download BlueStacks from the official site and install it: <code>https://www.bluestacks.com/</code>.</li>
+            <li>Start BlueStacks and sign in with your Google account (optional if you will sideload an APK).</li>
+            <li>Download the IoT MQTT Panel APK from NapkForPC or use the Play Store inside BlueStacks.</li>
+            <li>Install the APK: from BlueStacks use the "Install APK" action or drag-and-drop the file into the emulator window.</li>
+            <li>Launch IoT MQTT Panel, configure the broker endpoint (IP/FQDN, port), and choose the transport (mqtt / mqtts / ws / wss).</li>
+            <li>Test connectivity by subscribing to a test topic and publishing messages from a separate client (e.g., Mosquitto client, MQTT Explorer).</li>
+          </ol>
+
+          <h4>Network & Firewall Tips</h4>
+          <ul>
+            <li>If your broker is on the same LAN, ensure the emulator is set to use the host network or that NAT rules allow the emulator's network adapter to reach local IPs.</li>
+            <li>Open the necessary ports in Windows Firewall. For MQTT default port 1883 (non-TLS) and 8883 (TLS) — prefer TLS 8883 for production.</li>
+            <li>If you use WebSockets (WSS), ensure the correct path is configured (e.g., <code>wss://broker.example.com:443/mqtt</code>).</li>
+          </ul>
+        </div>
+
+        <!-- Emulator: LDPlayer -->
+        <div class="card" style="margin-bottom:18px">
+          <h3>Method 2 — LDPlayer (lightweight alternative)</h3>
+          <p>
+            LDPlayer is a lighter emulator that often works well on lower-tier systems. Steps are similar to BlueStacks; use the "Install APK" feature after downloading LDPlayer from its official site.
+          </p>
+
+          <h4>LDPlayer adjustments</h4>
+          <ul>
+            <li>Set CPU/Memory allocation to recommended values in emulator settings.</li>
+            <li>For better network reachability, enable bridged networking if available.</li>
+            <li>Enable "High performance" rendering mode if charts are slow.</li>
+          </ul>
+        </div>
+
+        <!-- Desktop wrappers -->
+        <div class="card">
+          <h3>Method 3 — Desktop Wrappers & Native Packaging</h3>
+          <p>
+            If you require a native desktop experience, some third-party tools can wrap Android apps into standalone executables using a containerized runtime. Examples include tools that combine Android runtime images with a single-app window. These are advanced options and require careful security review.
+          </p>
+
+          <h4>Considerations for wrappers</h4>
+          <ul>
+            <li>Validate the wrapper's update model (how it receives app updates).</li>
+            <li>Check for access to native OS features like system tray, autostart, and process monitoring.</li>
+            <li>Confirm the wrapper does not break TLS certificate validation or modify networking stack behavior.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Secure MQTT configuration -->
+    <section class="section" id="mqtt-config">
+      <div class="container">
+        <div class="section-header">
+          <h2>Secure MQTT Configuration for Windows Deployments</h2>
+          <p>
+            Security is essential. This section describes practical steps to secure MQTT communications between a desktop client (IoT MQTT Panel running in emulator) and the broker.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Transport & Port Selection</h3>
+          <p>
+            Use TLS wherever possible. Choose a port for TLS (commonly 8883 for MQTT/TLS or 443 for WSS if you're tunneling via a web server). Avoid exposing plain TCP MQTT (1883) to the public internet.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Broker Authentication</h3>
+          <p>
+            Configure username/password authentication at the broker level and use unique credentials per dashboard or user. On the client side, store credentials securely and consider rotating them periodically.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>TLS — CA, Server and Client Certificates</h3>
+          <p>
+            TLS provides encryption and server identity verification. For production:
+          </p>
+          <ol>
+            <li>Obtain a CA-signed certificate for the broker (preferred). Use Let's Encrypt or a commercial CA, or use an internal CA for corporate deployments.</li>
+            <li>Configure the broker to present the server certificate and to require TLS connections on port 8883.</li>
+            <li>Optionally require client certificates for mutual TLS (mTLS); distribute client certs to authorized desktop instances.</li>
+          </ol>
+
+          <h4>Example — Mosquitto TLS configuration snippet</h4>
+          <pre><code># mosquitto.conf example snippet
+listener 8883
+cafile /etc/mosquitto/certs/ca.crt
+certfile /etc/mosquitto/certs/server.crt
+keyfile /etc/mosquitto/certs/server.key
+require_certificate true    # optional — force client certs
+tls_version tlsv1.2
+</code></pre>
+
+          <p>
+            When client certs are used, export the client certificate and private key and import them into the emulator's file storage or use a wrapper that can reference OS-level certificate stores.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>WebSockets (WSS) Best Practices</h3>
+          <p>
+            Using WebSockets (ws/wss) adds HTTP-friendly transport that is useful behind proxies and over 443. When using WSS:
+          </p>
+          <ul>
+            <li>Use a reverse proxy (e.g., Nginx) to terminate TLS and forward to the broker's websocket listener.</li>
+            <li>Set the correct websocket path and port in the client (e.g., <code>wss://broker.example.com:443/mqtt</code>).</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Authentication & Authorization (ACL)</h3>
+          <p>
+            Implement topic ACLs at the broker to limit client access. For example, allow clients to publish only to <code>devices/{clientId}/set</code> and subscribe only to <code>devices/{clientId}/state</code>. Many brokers support pluggable authentication and authorization backends (files, databases, HTTP API).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Messaging patterns & JSON examples -->
+    <section class="section" id="examples">
+      <div class="container">
+        <div class="section-header">
+          <h2>MQTT Messaging Patterns & JSON Payload Examples</h2>
+          <p>
+            The following examples show idiomatic topic design and JSON payloads for telemetry and control when using IoT MQTT Panel dashboards.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Topic Naming Best Practices</h3>
+          <ul>
+            <li>Use hierarchical topics with clear namespaces: <code>{organization}/{site}/{device}/{sensor}</code>.</li>
+            <li>Use retained messages for persistent state on reconnect: mark messages as retained when publishing devices' last-known state.</li>
+            <li>Use QoS levels appropriate for your use case: QoS 0 for non-critical telemetry, QoS 1 for reliable delivery.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Telemetry Example (JSON)</h3>
+          <pre><code>{
+  "deviceId": "greenhouse-01",
+  "ts": 1698000000,
+  "sensors": {
+    "temperature": 23.8,
+    "humidity": 55.2,
+    "co2": 410
+  },
+  "status": "ok"
+}
+</code></pre>
+          <p>
+            Publish to topic: <code>org/plantfarm/greenhouse-01/telemetry</code> with <strong>retain=false</strong> and <strong>QoS=1</strong> for reliable telemetry ingestion.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Control Example (Command)</h3>
+          <pre><code>{
+  "commandId": "cmd-20231105-001",
+  "action": "setHeater",
+  "payload": {
+    "targetTemp": 25.0
+  }
+}
+</code></pre>
+          <p>
+            Publish control commands to: <code>org/plantfarm/greenhouse-01/commands</code>. The device acknowledges on <code>org/plantfarm/greenhouse-01/ack</code>.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Widget Binding — JSON Path Examples</h3>
+          <p>
+            When you configure a numeric gauge widget in IoT MQTT Panel, map the widget value to JSON path <code>$.sensors.temperature</code> (JSONPath-like mapping). Many dashboards provide flexible mapping; ensure your message payload and mapping are aligned.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Using Retained Messages for Initial Snapshot</h3>
+          <p>
+            Publish the current state of the device to a retained topic (for example <code>org/plantfarm/greenhouse-01/state</code>) so the dashboard receives initial state when it subscribes after connecting or reconnecting.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deployment & automation -->
+    <section class="section" id="deployment">
+      <div class="container">
+        <div class="section-header">
+          <h2>Deployment, Automation & Monitoring</h2>
+          <p>
+            Running dashboards in production requires automation and monitoring to ensure availability and quick recovery. Below are recommended practices for Windows-based deployments.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Autostart & Background Execution</h3>
+          <p>
+            For persistent dashboards configure the emulator to start on boot and to auto-launch IoT MQTT Panel. Many emulators support auto-start via their settings. If using a wrapper, register a startup entry in Windows Task Scheduler or the Startup folder.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Monitoring & Health Checks</h3>
+          <ul>
+            <li>Monitor emulator process health and memory usage.</li>
+            <li>Set up a small watchdog script to restart the emulator/app if unresponsive.</li>
+            <li>Use a logging sink to collect client logs and connection events for incident analysis.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Automated Backups</h3>
+          <p>
+            Schedule automatic backups of exported JSON panel files to a secure location (S3, SMB share, or local NAS). Keep incremental versions for auditing and rollback.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Change Management</h3>
+          <p>
+            Track panel version changes in source control (commit exported JSON) and apply staging/production workflows: test changes in a staging emulator before promoting to production.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Performance tuning -->
+    <section class="section" id="performance">
+      <div class="container">
+        <div class="section-header">
+          <h2>Performance Tuning & Resource Optimization</h2>
+          <p>
+            Desktop dashboards can be resource-intensive when many charts, widgets and frequent messages are used. Follow these guidelines to maintain responsiveness.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Broker-side Tuning</h3>
+          <ul>
+            <li>Limit retained message sizes and set a sensible max inflight messages.</li>
+            <li>Use topic partitions or namespaces to spread load across broker nodes if supported.</li>
+            <li>Enable persistence and disk-based queues for surge protection.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Client-side Tuning (Dashboard)</h3>
+          <ul>
+            <li>Reduce chart history duration for high-frequency topics to limit client memory usage.</li>
+            <li>Batch UI updates where possible (e.g., throttle high-frequency topics to 1Hz display refresh).</li>
+            <li>Choose appropriate QoS: QoS 1 for reliable delivery and QoS 0 for high-rate telemetry where occasional loss is acceptable.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Emulator Resource Settings</h3>
+          <p>
+            Increase emulator CPU cores and memory allocation for smoother rendering of complex dashboards. If the emulator supports GPU pass-through, enable it for accelerated UI rendering.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Network Considerations</h3>
+          <ul>
+            <li>Prefer wired LAN or high-quality Wi-Fi for desktop deployments to avoid packet loss and jitter.</li>
+            <li>Use TLS compression carefully; avoid adding latency in high-throughput scenarios.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="section" id="troubleshooting">
+      <div class="container">
+        <div class="section-header">
+          <h2>Troubleshooting Checklist</h2>
+          <p>
+            A prioritized troubleshooting checklist to resolve common connectivity and runtime problems when running IoT MQTT Panel on Windows.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>1) Connection Failures</h3>
+          <ol>
+            <li>Verify broker hostname/IP and port (1883/8883/443).</li>
+            <li>Check TLS: ensure CA chain is trusted and server certificate common name (CN) matches endpoint.</li>
+            <li>Test with an independent MQTT client such as <strong>MQTT Explorer</strong> or <strong>mosquitto_sub</strong> to isolate the problem.</li>
+            <li>Inspect emulator logs and the IoT MQTT Panel app logs for error messages.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>2) High CPU or Memory Use</h3>
+          <ul>
+            <li>Close unnecessary emulator apps and increase allocated memory in emulator settings.</li>
+            <li>Lower chart history retention or reduce the number of active charts.</li>
+            <li>Monitor Windows Task Manager to identify runaway processes.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>3) Message Formats Not Parsed</h3>
+          <ol>
+            <li>Verify payload is valid JSON (use JSON linting tools).</li>
+            <li>Confirm the JSON path mapping used in the widget matches the payload structure.</li>
+            <li>Handle edge cases: null fields, arrays, or unexpected data types can break mappings.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>4) UI Freezes or Crashes</h3>
+          <ul>
+            <li>Increase emulator resources and update the emulator to the latest version.</li>
+            <li>Check for known issues on the emulator's release notes and IoT MQTT Panel change log.</li>
+            <li>Export panels and test with a fresh install to isolate corrupt state files.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Advanced integrations -->
+    <section class="section" id="integrations">
+      <div class="container">
+        <div class="section-header">
+          <h2>Advanced Integrations & Automation Examples</h2>
+          <p>
+            Integrate IoT MQTT Panel with other systems for extended automation and analytics.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Integration with Home Automation (e.g., Home Assistant)</h3>
+          <p>
+            Use Home Assistant as the central controller and your broker as the messaging backbone. Expose MQTT topics to IoT MQTT Panel for visualization while Home Assistant handles automation rules and long-term persistence.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Data Pipeline — Broker to Time-series Database</h3>
+          <ol>
+            <li>Broker → Telegraf (MQTT consumer) → InfluxDB (time-series)</li>
+            <li>Use Grafana for historical analytics and IoT MQTT Panel for real-time control</li>
+          </ol>
+          <p>
+            This separation keeps the dashboard responsive while enabling long-term analytics.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>CI/CD for Dashboard Configurations</h3>
+          <p>
+            Store panel JSON files in Git repositories. Implement a deployment script that pushes updated JSON to a configuration store or distributes files to desktop instances through secure channels (SFTP, SMB, or cloud storage).
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Download & Resources -->
+    <section class="section" id="download">
+      <div class="container">
+        <div class="section-header">
+          <h2>Downloads & Useful Resources</h2>
+          <p>Official app downloads and external resources for the broker ecosystem.</p>
+        </div>
+
+        <div class="download-grid">
+          <div class="card download-card">
+            <strong>Download (APK)</strong>
+            <p>Use this APK in an emulator or with a wrapper: <a class="btn btn-primary" href="https://napkforpc.com/apk/snr.lab.iotmqttpanel.prod/" target="_blank" rel="noopener">Download APK (NapkForPC)</a></p>
+          </div>
+
+          <div class="card download-card">
+            <strong>Google Play</strong>
+            <p>Official mobile listing: <a href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank" rel="noopener">Open on Google Play</a></p>
+          </div>
+
+          <div class="card download-card">
+            <strong>App Store (iOS)</strong>
+            <p>Official iOS listing: <a href="https://apps.apple.com/us/app/iot-mqtt-panel/id6466780124" target="_blank" rel="noopener">Open on App Store</a></p>
+          </div>
+        </div>
+
+        <div style="margin-top:16px" class="card">
+          <h3>Broker Resources</h3>
+          <ul>
+            <li>Mosquitto — lightweight open-source MQTT broker</li>
+            <li>EMQX — scalable enterprise broker</li>
+            <li>HiveMQ — commercial and cloud offerings</li>
+            <li>AWS IoT Core — managed broker with device registry</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <h2>FAQ — Production Questions Answered</h2>
+        </div>
+
+        <div class="card">
+          <h3>Q: Is it safe to run the app in an emulator on a production machine?</h3>
+          <p>
+            A: Emulators are safe when properly sandboxed and kept updated. Use network controls, run the emulator under a dedicated service account, and minimize other apps inside the emulator to reduce attack surface. For high-security environments prefer native or wrapped deployments with vetted runtimes and OS-level certificate controls.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Q: How do I rotate credentials and certificates?</h3>
+          <p>
+            A: Implement an automated rotation process for credentials (short-lived tokens or scheduled rotation), and use an internal PKI for issuing client certificates. Coordinate client certificate updates with a deployment window and backup existing configs before applying changes.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Q: What telemetry retention should I use?</h3>
+          <p>
+            A: For dashboards, short retention (minutes to hours) is acceptable for real-time UX. For analytics and historical trends, push telemetry from the broker to a TSDB (InfluxDB, TimescaleDB) for long-term retention (days to years) depending on regulatory and business needs.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Appendix: sample commands -->
+    <section class="section" id="appendix">
+      <div class="container">
+        <div class="card">
+          <h2>Appendix — Useful CLI Examples & Snippets</h2>
+
+          <h3>Mosquitto publish / subscribe</h3>
+          <pre><code># subscribe
+mosquitto_sub -h broker.example.com -p 8883 --capath /etc/ssl/certs -t "org/+/+/telemetry" -v
+
+# publish telemetry (with QoS 1)
+mosquitto_pub -h broker.example.com -p 8883 --capath /etc/ssl/certs -t "org/plantfarm/greenhouse-01/telemetry" -m '{"deviceId":"greenhouse-01","sensors":{"temperature":23.8}}' -q 1
+</code></pre>
+
+          <h3>Testing with MQTT Explorer</h3>
+          <p>
+            Use <strong>MQTT Explorer</strong> for a graphical view of topics and retained messages. It's useful to validate payload structure and retained state.
+          </p>
+
+          <h3>Nginx reverse proxy for WSS</h3>
+          <pre><code># nginx snippet for websockets proxy
+server {
+  listen 443 ssl;
+  server_name broker.example.com;
+
+  ssl_certificate /etc/letsencrypt/live/broker.example.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/broker.example.com/privkey.pem;
+
+  location /mqtt {
+    proxy_pass http://127.0.0.1:9001; # internal broker websocket port
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+  }
+}
+</code></pre>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>IoT MQTT Panel</h3>
+        <p>Powerful MQTT dashboards for hobbyists, makers and professionals. Use this guide to run and secure the app on Windows platforms and in production environments.</p>
+      </div>
+
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Overview</a></li>
+          <li><a href="iot-mqtt-panel-for-ios.html">iOS</a></li>
+          <li><a href="#how-to-run">How to Run</a></li>
+          <li><a href="#mqtt-config">Security</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod" target="_blank" rel="noopener">Google Play</a></li>
+          <li><a href="https://apps.apple.com/us/app/iot-mqtt-panel/id6466780124" target="_blank" rel="noopener">App Store</a></li>
+          <li><a href="https://napkforpc.com/apk/snr.lab.iotmqttpanel.prod/" target="_blank" rel="noopener">NapkForPC APK</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container" style="text-align:center;border-top:1px solid rgba(255,255,255,0.04);padding-top:18px;margin-top:18px;color:rgba(255,255,255,0.6)">
+      © 2025 IoT MQTT Panel — All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button id="backToTop" class="hidden" aria-label="Back to top" onclick="scrollToTop()">↑</button>
+
+  <script src="assets/js/script.min.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-28QZYNLNDH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-28QZYNLNDH');
+  </script>
+</body>
+</html>
